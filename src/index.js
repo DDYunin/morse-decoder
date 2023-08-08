@@ -38,7 +38,49 @@ const MORSE_TABLE = {
 };
 
 function decode(expr) {
-    // write your solution here
+    // Первый шаг - создать из строки массив строк, длина каждой = 10
+    let letterCounter = 0;
+    const exprArray = [];
+    let encodedSymbol = '';
+    // Для правильной работы моего цикла
+    const modernizeExpr = expr += '4';
+    modernizeExpr.split('').forEach(letter => {
+        if (letterCounter === 10) {
+            exprArray.push(encodedSymbol);
+            encodedSymbol = '';
+            letterCounter = 0;
+        }
+        encodedSymbol += letter;
+        letterCounter++;
+    });
+    // Второй шаг - преобразовать строку, состоящую из 0 и 1 в символ азбуки морзе
+    const morseExprArray = exprArray.map(encodedExpr => {
+        let chunk = '';
+        let counter = 0;
+        let message = '';
+        for (let i = 0; i <= encodedExpr.length; i++) {
+            if (counter === 2) {
+                if (chunk === '10') {
+                    message += '.';
+                }
+                if (chunk === '11') {
+                    message += '-';
+                }
+                chunk = '';
+                counter = 0;
+            }
+            chunk += encodedExpr[i];
+            counter++;
+        }
+        return message;
+    });
+    // Третий шаг преобразуем в буквы и склеиваем
+    return morseExprArray.map(morseLetter => {
+        if (morseLetter === '') {
+            return ' ';
+        }
+        return MORSE_TABLE[morseLetter];
+    }).join('');
 }
 
 module.exports = {
